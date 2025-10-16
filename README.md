@@ -39,7 +39,7 @@ A unique, interactive portfolio website built with Next.js that presents profess
 -   **Language**: TypeScript
 -   **Styling**: Tailwind CSS
 -   **Icons**: Lucide React
--   **Deployment**: Vercel
+-   **Deployment**: Netlify
 
 ## 🚀 Getting Started
 
