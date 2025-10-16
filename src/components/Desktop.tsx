@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useWindowManager, WindowType, WindowState } from './WindowManager';
 import StartMenu from './StartMenu';
 import Taskbar from './Taskbar';
@@ -9,6 +9,15 @@ import NotepadWindow from './Apps/NotepadWindow';
 import BrowserWindow from './Apps/BrowserWindow';
 import CodeEditorWindow from './Apps/CodeEditorWindow';
 import EmailWindow from './Apps/EmailWindow';
+import {
+	ContextMenu,
+	ContextMenuContent,
+	ContextMenuItem,
+	ContextMenuTrigger,
+	ContextMenuSub,
+	ContextMenuSubContent,
+	ContextMenuSubTrigger,
+} from '@/components/ui/context-menu';
 
 const Desktop: React.FC = () => {
 	const {
@@ -30,6 +39,17 @@ const Desktop: React.FC = () => {
 	const [outputBuffer, setOutputBuffer] = useState<string[]>([]);
 	const [isTyping] = useState(false);
 	const [typingCommand] = useState('');
+	const browserOpenedRef = useRef(false);
+
+	// Wallpaper state
+	const [currentWallpaper, setCurrentWallpaper] = useState('/wallpaper.jpg');
+
+	// Define wallpaper options
+	const wallpapers = [
+		{ name: 'Windows', path: '/wallpaper.jpg' },
+		{ name: 'Rocks and Water', path: '/wallpaper-2.jpg' },
+		{ name: 'Sunsets', path: '/wallpaper-3.jpg' },
+	];
 
 	// Initialize terminal with welcome message
 	useEffect(() => {
@@ -50,10 +70,27 @@ const Desktop: React.FC = () => {
 		setOutputBuffer(welcomeMessage);
 	}, []);
 
-	// Open browser window by default
+	// Open browser window by default (only once)
 	useEffect(() => {
-		openWindow('browser');
-	}, []); // Empty dependency array - only run once on mount
+		if (!browserOpenedRef.current) {
+			openWindow('browser');
+			browserOpenedRef.current = true;
+		}
+	}, [openWindow]);
+
+	// Load saved wallpaper from localStorage
+	useEffect(() => {
+		const savedWallpaper = localStorage.getItem('desktop-wallpaper');
+		if (savedWallpaper) {
+			setCurrentWallpaper(savedWallpaper);
+		}
+	}, []);
+
+	// Handle wallpaper change with persistence
+	const handleWallpaperChange = (wallpaper: string) => {
+		setCurrentWallpaper(wallpaper);
+		localStorage.setItem('desktop-wallpaper', wallpaper);
+	};
 
 	const handleCommand = (command: string) => {
 		if (isTyping) return;
@@ -361,30 +398,59 @@ const Desktop: React.FC = () => {
 	};
 
 	return (
-		<div
-			className='min-h-screen flex flex-col relative pb-20'
-			style={{
-				backgroundImage: 'url(/wallpaper.jpg)',
-				backgroundSize: 'cover',
-				backgroundPosition: 'center',
-				backgroundRepeat: 'no-repeat',
-			}}>
-			{/* Windows */}
-			{openWindows
-				.filter((window) => !window.isMinimized)
-				.map((window) => renderWindow(window))}
+		<ContextMenu>
+			<ContextMenuTrigger asChild>
+				<div
+					className='min-h-screen flex flex-col relative pb-20'
+					style={{
+						backgroundImage: `url(${currentWallpaper})`,
+						backgroundSize: 'cover',
+						backgroundPosition: 'center',
+						backgroundRepeat: 'no-repeat',
+					}}>
+					{/* Windows */}
+					{openWindows
+						.filter((window) => !window.isMinimized)
+						.map((window) => renderWindow(window))}
 
-			{/* Start Menu */}
-			<StartMenu isOpen={isStartMenuOpen} onClose={closeStartMenu} onOpenApp={openWindow} />
+					{/* Start Menu */}
+					<StartMenu
+						isOpen={isStartMenuOpen}
+						onClose={closeStartMenu}
+						onOpenApp={openWindow}
+					/>
 
-			{/* Taskbar */}
-			<Taskbar
-				openWindows={openWindows}
-				activeWindowId={activeWindowId}
-				onSectionClick={handleTaskbarClick}
-				onWindowClick={bringToFront}
-			/>
-		</div>
+					{/* Taskbar */}
+					<Taskbar
+						openWindows={openWindows}
+						activeWindowId={activeWindowId}
+						onSectionClick={handleTaskbarClick}
+						onWindowClick={bringToFront}
+					/>
+				</div>
+			</ContextMenuTrigger>
+			<ContextMenuContent>
+				<ContextMenuSub>
+					<ContextMenuSubTrigger className='flex w-[300px] items-center justify-center rounded-md border border-dashed text-sm'>
+						Personalize
+					</ContextMenuSubTrigger>
+					<ContextMenuSubContent className='w-52'>
+						{wallpapers.map((wallpaper) => (
+							<ContextMenuItem
+								key={wallpaper.path}
+								onClick={() => handleWallpaperChange(wallpaper.path)}>
+								<div className='flex items-center justify-between w-full gap-2'>
+									<span>{wallpaper.name}</span>
+									{currentWallpaper === wallpaper.path && (
+										<span className='font-bold'>✓</span>
+									)}
+								</div>
+							</ContextMenuItem>
+						))}
+					</ContextMenuSubContent>
+				</ContextMenuSub>
+			</ContextMenuContent>
+		</ContextMenu>
 	);
 };
 

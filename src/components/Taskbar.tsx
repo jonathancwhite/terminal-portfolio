@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { User, Briefcase, Code, Mail, Home, Terminal } from 'lucide-react';
+import { User, Briefcase, Code, Mail, LayoutGrid, Terminal } from 'lucide-react';
 import { WindowState } from './WindowManager';
 
 interface TaskbarProps {
@@ -22,7 +22,6 @@ const Taskbar = ({ openWindows, activeWindowId, onSectionClick, onWindowClick }:
 					hour12: true,
 					hour: '2-digit',
 					minute: '2-digit',
-					second: '2-digit',
 				}),
 			);
 		};
@@ -51,7 +50,7 @@ const Taskbar = ({ openWindows, activeWindowId, onSectionClick, onWindowClick }:
 						onClick={() => onSectionClick('home')}
 						className='group relative flex items-center justify-center p-3 rounded-lg transition-all duration-200 text-gray-400 hover:text-cyan-400 hover:bg-gray-800/50'
 						title='Start Menu'>
-						<Home
+						<LayoutGrid
 							size={16}
 							className='transition-transform duration-200 group-hover:scale-105'
 						/>
