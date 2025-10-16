@@ -1,17 +1,37 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import TerminalWindow from './Terminal/TerminalWindow';
+import { useWindowManager, WindowType, WindowState } from './WindowManager';
+import StartMenu from './StartMenu';
 import Taskbar from './Taskbar';
+import TerminalAppWindow from './Apps/TerminalAppWindow';
+import NotepadWindow from './Apps/NotepadWindow';
+import BrowserWindow from './Apps/BrowserWindow';
+import CodeEditorWindow from './Apps/CodeEditorWindow';
+import EmailWindow from './Apps/EmailWindow';
 
 const Desktop: React.FC = () => {
+	const {
+		openWindows,
+		activeWindowId,
+		isStartMenuOpen,
+		openWindow,
+		closeWindow,
+		minimizeWindow,
+		toggleMaximize,
+		bringToFront,
+		toggleStartMenu,
+		closeStartMenu,
+	} = useWindowManager();
+
+	// Terminal state for the terminal app
 	const [currentPath, setCurrentPath] = useState('~');
 	const [commandHistory, setCommandHistory] = useState<string[]>([]);
 	const [outputBuffer, setOutputBuffer] = useState<string[]>([]);
-	const [isTyping, setIsTyping] = useState(false);
-	const [typingCommand, setTypingCommand] = useState('');
+	const [isTyping] = useState(false);
+	const [typingCommand] = useState('');
 
-	// Initialize with welcome message
+	// Initialize terminal with welcome message
 	useEffect(() => {
 		const welcomeMessage = [
 			'Available commands:',
@@ -21,6 +41,8 @@ const Desktop: React.FC = () => {
 			'  clear       - Clear terminal',
 			'  help        - Show help',
 			'  whoami      - Display user info',
+			'  neofetch    - System information',
+			'  matrix      - Matrix mode',
 			'',
 			'Try: ls → cd about → ls → cat about.txt',
 			'',
@@ -28,16 +50,17 @@ const Desktop: React.FC = () => {
 		setOutputBuffer(welcomeMessage);
 	}, []);
 
+	// Open browser window by default
+	useEffect(() => {
+		openWindow('browser');
+	}, []); // Empty dependency array - only run once on mount
+
 	const handleCommand = (command: string) => {
-		if (isTyping) return; // Prevent commands while typing animation is running
+		if (isTyping) return;
 
-		// Add command to history
 		setCommandHistory((prev) => [...prev, command]);
-
-		// Add command to output
 		setOutputBuffer((prev) => [...prev, `jonathancwhite@portfolio:${currentPath}$ ${command}`]);
 
-		// Process command
 		const result = processCommand(command);
 		if (result) {
 			setOutputBuffer((prev) => [...prev, ...result]);
@@ -103,6 +126,8 @@ const Desktop: React.FC = () => {
 					'  clear       - Clear terminal',
 					'  help        - Show this help',
 					'  whoami      - Display user information',
+					'  neofetch    - System information',
+					'  matrix      - Matrix mode',
 					'',
 				];
 
@@ -280,148 +305,85 @@ const Desktop: React.FC = () => {
 		}
 	};
 
-	const animateTyping = (text: string, onComplete: () => void) => {
-		let typedText = '';
-		let i = 0;
+	const handleTaskbarClick = (section: string) => {
+		if (section === 'home') {
+			toggleStartMenu();
+		} else {
+			// Map section names to window types
+			const windowTypeMap: Record<string, WindowType> = {
+				terminal: 'terminal',
+				about: 'notepad',
+				experience: 'browser',
+				skills: 'editor',
+				contact: 'email',
+			};
 
-		const typeInterval = setInterval(() => {
-			if (i < text.length) {
-				typedText += text[i];
-				setTypingCommand(typedText);
-				i++;
-			} else {
-				clearInterval(typeInterval);
-				setTypingCommand('');
-				onComplete();
+			const windowType = windowTypeMap[section];
+			if (windowType) {
+				openWindow(windowType);
 			}
-		}, 50);
+		}
 	};
 
-	const handleTaskbarClick = (section: string) => {
-		if (isTyping) return;
+	const renderWindow = (window: WindowState) => {
+		const commonProps = {
+			onClose: () => closeWindow(window.id),
+			onMinimize: () => minimizeWindow(window.id),
+			onMaximize: () => toggleMaximize(window.id),
+			isFullscreen: window.isFullscreen,
+		};
 
-		setIsTyping(true);
-		const command = section === 'home' ? 'cd ~' : `cd ${section}`;
-
-		// Step 1: Animate typing the cd command
-		animateTyping(command, () => {
-			// Add command to output after typing animation is complete
-			setOutputBuffer((prev) => [
-				...prev,
-				`jonathancwhite@portfolio:${currentPath}$ ${command}`,
-			]);
-
-			// Step 2: Process the cd command after adding to output
-			setTimeout(() => {
-				const result = processCommand(command);
-				if (result) {
-					setOutputBuffer((prev) => [...prev, ...result]);
-				}
-
-				// Step 3: Wait 350ms, then animate typing "ls"
-				if (command.startsWith('cd')) {
-					setTimeout(() => {
-						const targetPath = command === 'cd ~' ? '~' : command.split(' ')[1];
-
-						// Add ls command to output
-						setOutputBuffer((prev) => [
-							...prev,
-							`jonathancwhite@portfolio:${targetPath}$ ls`,
-						]);
-
-						// Step 4: Animate typing "ls"
-						animateTyping('ls', () => {
-							// Step 5: Execute ls command after typing animation completes
-							setTimeout(() => {
-								const lsResult = processCommand('ls', targetPath);
-								if (lsResult) {
-									setOutputBuffer((prev) => [...prev, ...lsResult]);
-								}
-
-								// Step 6: Wait 350ms, then animate typing the appropriate command
-								setTimeout(() => {
-									if (targetPath === '~') {
-										// For home directory, show help command
-										setOutputBuffer((prev) => [
-											...prev,
-											`jonathancwhite@portfolio:${targetPath}$ help`,
-										]);
-
-										// Step 7: Animate typing "help"
-										animateTyping('help', () => {
-											// Step 8: Execute help command after typing animation completes
-											setTimeout(() => {
-												const helpResult = processCommand('help');
-												if (helpResult) {
-													setOutputBuffer((prev) => [
-														...prev,
-														...helpResult,
-													]);
-												}
-												setIsTyping(false);
-											}, 200);
-										});
-									} else {
-										// For other directories, show cat command
-										const fileName = `${targetPath}.txt`;
-
-										setOutputBuffer((prev) => [
-											...prev,
-											`jonathancwhite@portfolio:${targetPath}$ cat ${fileName}`,
-										]);
-
-										// Step 7: Animate typing "cat [file].txt"
-										animateTyping(`cat ${fileName}`, () => {
-											// Step 8: Execute cat command after typing animation completes
-											setTimeout(() => {
-												const catResult = processCommand(`cat ${fileName}`);
-												if (catResult) {
-													setOutputBuffer((prev) => [
-														...prev,
-														...catResult,
-													]);
-												}
-												setIsTyping(false);
-											}, 200);
-										});
-									}
-								}, 350);
-							}, 200);
-						});
-					}, 350);
-				} else {
-					setIsTyping(false);
-				}
-			}, 300);
-		});
+		switch (window.type) {
+			case 'terminal':
+				return (
+					<TerminalAppWindow
+						key={window.id}
+						{...commonProps}
+						currentPath={currentPath}
+						outputBuffer={outputBuffer}
+						commandHistory={commandHistory}
+						onCommand={handleCommand}
+						isTyping={isTyping}
+						typingCommand={typingCommand}
+					/>
+				);
+			case 'notepad':
+				return <NotepadWindow key={window.id} {...commonProps} />;
+			case 'browser':
+				return <BrowserWindow key={window.id} {...commonProps} />;
+			case 'editor':
+				return <CodeEditorWindow key={window.id} {...commonProps} />;
+			case 'email':
+				return <EmailWindow key={window.id} {...commonProps} />;
+			default:
+				return null;
+		}
 	};
 
 	return (
 		<div
-			className='min-h-screen flex flex-col relative'
+			className='min-h-screen flex flex-col relative pb-20'
 			style={{
-				backgroundImage: 'url(/wallpaper.webp)',
+				backgroundImage: 'url(/wallpaper.jpg)',
 				backgroundSize: 'cover',
 				backgroundPosition: 'center',
 				backgroundRepeat: 'no-repeat',
 			}}>
-			{/* Dark overlay for better terminal visibility */}
-			<div className='absolute inset-0 bg-black/40'></div>
+			{/* Windows */}
+			{openWindows
+				.filter((window) => !window.isMinimized)
+				.map((window) => renderWindow(window))}
 
-			{/* Main Terminal Area */}
-			<div className='flex-1 flex items-center justify-center p-8 relative z-10'>
-				<TerminalWindow
-					currentPath={currentPath}
-					outputBuffer={outputBuffer}
-					commandHistory={commandHistory}
-					onCommand={handleCommand}
-					isTyping={isTyping}
-					typingCommand={typingCommand}
-				/>
-			</div>
+			{/* Start Menu */}
+			<StartMenu isOpen={isStartMenuOpen} onClose={closeStartMenu} onOpenApp={openWindow} />
 
 			{/* Taskbar */}
-			<Taskbar currentPath={currentPath} onSectionClick={handleTaskbarClick} />
+			<Taskbar
+				openWindows={openWindows}
+				activeWindowId={activeWindowId}
+				onSectionClick={handleTaskbarClick}
+				onWindowClick={bringToFront}
+			/>
 		</div>
 	);
 };

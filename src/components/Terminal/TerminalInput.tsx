@@ -38,7 +38,7 @@ const TerminalInput = ({
 	};
 
 	return (
-		<div className='bg-black border-t border-gray-600 terminal-input-padding'>
+		<div className='bg-black border-t border-gray-600 p-2'>
 			<div className='flex items-center'>
 				<span className='text-cyan-400 font-mono text-sm mr-2'>{getPrompt()}</span>
 				{isTyping ? (

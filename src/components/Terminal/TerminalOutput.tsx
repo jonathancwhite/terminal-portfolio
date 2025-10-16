@@ -10,7 +10,7 @@ const TerminalOutput = forwardRef<HTMLDivElement, TerminalOutputProps>(({ output
 	return (
 		<div
 			ref={ref}
-			className='flex-1 bg-black text-green-400 font-mono text-sm terminal-padding overflow-y-auto scrollbar-thin scrollbar-thumb-gray-600 scrollbar-track-gray-800'
+			className='flex-1 bg-black text-green-400 font-mono text-sm px-4 pt-16 overflow-y-auto scrollbar-thin scrollbar-thumb-gray-600 scrollbar-track-gray-800 min-h-full'
 			style={{
 				scrollbarWidth: 'thin',
 				scrollbarColor: '#4b5563 #1f2937',

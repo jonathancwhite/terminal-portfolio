@@ -16,10 +16,6 @@
 	box-sizing: border-box;
 }
 
-* {
-	margin: 0;
-}
-
 /* Reset padding only for specific elements, not all */
 body,
 h1,
@@ -119,7 +115,7 @@ body {
 
 /* Terminal specific padding utilities */
 .terminal-padding {
-	padding: 1.5rem;
+	padding: 1rem;
 }
 
 .terminal-header-padding {

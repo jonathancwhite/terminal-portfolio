@@ -1,7 +1,6 @@
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
-import TerminalHeader from './TerminalHeader';
 import TerminalOutput from './TerminalOutput';
 import TerminalInput from './TerminalInput';
 
@@ -88,26 +87,24 @@ const TerminalWindow = ({
 	};
 
 	return (
-		<div className='w-full max-w-6xl mx-auto'>
-			<div className='bg-gray-800 rounded-lg shadow-2xl border border-gray-600 overflow-hidden'>
-				{/* Terminal Header */}
-				<TerminalHeader currentPath={currentPath} />
+		<div className='w-full h-full bg-gray-800 overflow-hidden'>
+			{/* Terminal Header */}
+			{/* <TerminalHeader currentPath={currentPath} /> */}
 
-				{/* Terminal Body */}
-				<div className='flex flex-col min-h-96 h-[80svh]'>
-					{/* Output Area */}
-					<TerminalOutput ref={outputRef} outputBuffer={outputBuffer} />
+			{/* Terminal Body */}
+			<div className='flex flex-col h-full'>
+				{/* Output Area */}
+				<TerminalOutput ref={outputRef} outputBuffer={outputBuffer} />
 
-					{/* Input Area */}
-					<TerminalInput
-						inputValue={inputValue}
-						setInputValue={setInputValue}
-						currentPath={currentPath}
-						onKeyDown={handleKeyDown}
-						isTyping={isTyping}
-						typingCommand={typingCommand}
-					/>
-				</div>
+				{/* Input Area */}
+				<TerminalInput
+					inputValue={inputValue}
+					setInputValue={setInputValue}
+					currentPath={currentPath}
+					onKeyDown={handleKeyDown}
+					isTyping={isTyping}
+					typingCommand={typingCommand}
+				/>
 			</div>
 		</div>
 	);
