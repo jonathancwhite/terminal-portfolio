@@ -1,0 +1,37 @@
+import type { Metadata } from 'next';
+import './globals.css';
+
+export const metadata: Metadata = {
+	title: 'Jonathan White - Senior Software Engineer',
+	description:
+		'Senior Software Engineer crafting scalable, modern web applications using React, Next.js, Vue.js, and Node.js',
+	keywords: [
+		'software engineer',
+		'developer',
+		'portfolio',
+		'programming',
+		'technology',
+		'react',
+		'nextjs',
+		'vue',
+		'nodejs',
+	],
+	authors: [{ name: 'Jonathan White' }],
+};
+
+export const viewport = {
+	width: 'device-width',
+	initialScale: 1,
+};
+
+export default function RootLayout({
+	children,
+}: Readonly<{
+	children: React.ReactNode;
+}>) {
+	return (
+		<html lang='en' className='scroll-smooth'>
+			<body className='font-mono bg-black text-green-400 min-h-screen'>{children}</body>
+		</html>
+	);
+}

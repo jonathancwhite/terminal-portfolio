@@ -1,0 +1,137 @@
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&display=swap');
+@import 'tailwindcss';
+
+:root {
+	--background: #000000;
+	--foreground: #00ff00;
+	--terminal-bg: #1a1a1a;
+	--terminal-text: #00ff00;
+	--terminal-accent: #00cccc;
+	--terminal-border: #333333;
+}
+
+*,
+*::before,
+*::after {
+	box-sizing: border-box;
+}
+
+* {
+	margin: 0;
+}
+
+/* Reset padding only for specific elements, not all */
+body,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p,
+blockquote,
+pre,
+dl,
+dd,
+ol,
+ul,
+li,
+fieldset,
+form,
+label,
+legend,
+table,
+caption,
+tbody,
+tfoot,
+thead,
+tr,
+th,
+td,
+article,
+aside,
+canvas,
+details,
+embed,
+figure,
+figcaption,
+footer,
+header,
+hgroup,
+menu,
+nav,
+output,
+ruby,
+section,
+summary,
+time,
+mark,
+audio,
+video {
+	padding: 0;
+}
+
+html {
+	scroll-behavior: smooth;
+}
+
+body {
+	background: var(--background);
+	color: var(--terminal-text);
+	font-family: 'JetBrains Mono', 'Fira Code', 'Monaco', 'Consolas', monospace;
+	line-height: 1.6;
+	overflow-x: hidden;
+}
+
+/* Custom scrollbar for terminal */
+.scrollbar-thin {
+	scrollbar-width: thin;
+	scrollbar-color: #4b5563 #1f2937;
+}
+
+.scrollbar-thin::-webkit-scrollbar {
+	width: 8px;
+}
+
+.scrollbar-thin::-webkit-scrollbar-track {
+	background: #1f2937;
+}
+
+.scrollbar-thin::-webkit-scrollbar-thumb {
+	background: #4b5563;
+	border-radius: 4px;
+}
+
+.scrollbar-thin::-webkit-scrollbar-thumb:hover {
+	background: #6b7280;
+}
+
+/* Selection styling */
+::selection {
+	background: rgba(0, 255, 0, 0.3);
+	color: var(--terminal-text);
+}
+
+/* Focus styles - disabled */
+*:focus {
+	outline: none;
+}
+
+/* Terminal specific padding utilities */
+.terminal-padding {
+	padding: 1.5rem;
+}
+
+.terminal-header-padding {
+	padding: 0.5rem 1rem;
+}
+
+.terminal-input-padding {
+	padding: 1rem;
+}
+
+/* Smooth transitions */
+* {
+	transition: color 0.3s ease, background-color 0.3s ease, border-color 0.3s ease,
+		transform 0.2s ease;
+}
