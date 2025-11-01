@@ -2,16 +2,16 @@
 
 A unique, interactive portfolio website built with Next.js that presents professional information through an authentic terminal interface. Experience a developer's portfolio like never before - navigate through directories, execute commands, and explore content just like you would in a real terminal.
 
-## ✨ Features
+## Features
 
-### 🖥️ Desktop Interface
+### Desktop Interface
 
 -   **Custom Wallpaper**: Personal desktop background
 -   **Terminal Window**: macOS-inspired floating window with traffic light buttons
 -   **Taskbar Navigation**: Bottom dock with navigation icons and real-time clock - similar to windows 11
 -   **Responsive Design**: Works seamlessly across all device sizes
 
-### 💻 Interactive Terminal Experience
+### Interactive Terminal Experience
 
 -   **Authentic Commands**: Real terminal commands (`ls`, `cd`, `cat`, `clear`, `help`, `whoami`)
 -   **Typing Animations**: Watch commands being typed character by character
@@ -19,21 +19,21 @@ A unique, interactive portfolio website built with Next.js that presents profess
 -   **Auto-scroll**: Terminal automatically scrolls to show latest output
 -   **Easter Eggs**: Hidden commands like `neofetch` and `matrix`
 
-### 📁 File System Navigation
+### File System Navigation
 
 -   **Directory Structure**: Navigate through `about/`, `experience/`, `skills/`, `contact/`
 -   **File Contents**: Use `cat` command to read detailed information
 -   **Smart Navigation**: Click taskbar icons for guided navigation
 -   **Help System**: Built-in help command shows available options
 
-### 🎨 Professional Content
+### Professional Content
 
 -   **About Section**: Personal bio, location, and interests
 -   **Experience**: Detailed job history with achievements and technologies
 -   **Skills**: Technical skills with proficiency indicators
 -   **Contact**: Social links and professional contact information
 
-## 🛠️ Tech Stack
+## Tech Stack
 
 -   **Framework**: Next.js 15 with App Router
 -   **Language**: TypeScript
@@ -41,14 +41,7 @@ A unique, interactive portfolio website built with Next.js that presents profess
 -   **Icons**: Lucide React
 -   **Deployment**: Netlify
 
-## 🚀 Getting Started
-
-### Prerequisites
-
--   Node.js 18+
--   npm or yarn
-
-## 📁 Project Structure
+## Project Structure
 
 ```
 src/
@@ -98,11 +91,11 @@ Home (~) → ls → cd about → ls → cat about.txt
          → cd contact → ls → cat contact.txt
 ```
 
-## 📝 License
+## License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
-## 🙏 Acknowledgments
+## Acknowledgments
 
 -   Inspired by terminal interfaces and developer workflows
 -   Icons provided by [Lucide React](https://lucide.dev/)
